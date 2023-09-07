@@ -8,7 +8,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Test
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
-          echo ${{ github.event }}
+          echo $GITHUB_CONTEXT
           echo "curl -X POST https://api.github.com/repos/:userName/:repoName/dispatches -H 'Accept: application/vnd.github.everest-preview+json' -u ${{ secrets.ACTIONS_KEY }} --data '{"event_type": "Trigger Workflow", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'"
       - uses: actions/checkout@v3
