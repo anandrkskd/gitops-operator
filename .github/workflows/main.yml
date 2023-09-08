@@ -1,4 +1,4 @@
-name: workflow_01
+name: Trigger openshift-ci automation
 on:
   create
 jobs:
@@ -6,12 +6,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Test
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
-          echo $GITHUB_CONTEX
-          echo ${{ github.event.ref }}
-          echo "curl -X POST https://api.github.com/repos/:userName/:repoName/dispatches -H 'Accept: application/vnd.github.everest-preview+json' -u ${{ secrets.ACTIONS_KEY }} --data '{"event_type": "Trigger Workflow", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'"
-      - uses: actions/checkout@v3
+          export BRANCH=${{ github.event.ref }}
+          echo $BRANCH
+          # check if version starts with v or not
+          if [[ BRANCH[0] == v ]];then      
+            curl -X POST https://api.github.com/repos/kamuserbot/release/dispatches -H 'Accept: application/vnd.github.everest-preview+json' -u ${{ secrets.ACTIONS_KEY }} --data '{"event_type": "Trigger Workflow", "client_payload": { "branch", "$BRANCH" }}'
+            echo "Request sent!"
+          else 
+            echo "skipping Workflow activation"
