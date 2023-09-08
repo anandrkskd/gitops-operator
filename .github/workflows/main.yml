@@ -11,7 +11,7 @@ jobs:
           export BRANCH=${{ github.event.ref }}
           echo $BRANCH
           # check if version starts with v or not
-          if [[ "BRANCH" =~ ^"v" ]];then      
+          if [[ $BRANCH = v* ]];then      
             curl -L \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ secrets.ACTIONS_KEY }}" \
