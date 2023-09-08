@@ -21,3 +21,4 @@ jobs:
             echo "Request sent!"
           else 
             echo "skipping Workflow activation"
+          fi
