@@ -12,8 +12,7 @@ jobs:
           echo $BRANCH
           # check if version starts with v or not
           if [[ "BRANCH" =~ ^"v" ]];then      
-            curl -L \                                                                                                                           gitops-operator/git/openshift-ci-automation 
-              -X POST \
+            curl -L \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ secrets.ACTIONS_KEY }}" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
