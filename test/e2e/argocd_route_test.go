@@ -25,6 +25,7 @@ import (
 	. "github.com/onsi/gomega"
 	console "github.com/openshift/api/console/v1"
 	routev1 "github.com/openshift/api/route/v1"
+	"github.com/redhat-developer/gitops-operator/test/helper"
 	"k8s.io/apimachinery/pkg/types"
 )
 
@@ -34,11 +35,11 @@ var _ = Describe("Argo CD ConsoleLink controller", func() {
 		consoleLink := &console.ConsoleLink{}
 
 		It("Argocd route is present", func() {
-			checkIfPresent(types.NamespacedName{Name: argoCDRouteName, Namespace: argoCDNamespace}, route)
+			helper.CheckIfPresent(types.NamespacedName{Name: argoCDRouteName, Namespace: argoCDNamespace}, route)
 		})
 
 		It("ConsoleLink is created", func() {
-			checkIfPresent(types.NamespacedName{Name: consoleLinkName}, consoleLink)
+			helper.CheckIfPresent(types.NamespacedName{Name: consoleLinkName}, consoleLink)
 		})
 
 		It("ConsoleLink and argocd route should match", func() {

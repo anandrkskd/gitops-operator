@@ -60,17 +60,17 @@ var _ = Describe("GitOpsServiceController", func() {
 	Context("Validate default Argo CD installation", func() {
 		argoCDInstance := &argoapp.ArgoCD{}
 		It("openshift-gitops namespace is created", func() {
-			checkIfPresent(types.NamespacedName{Name: argoCDNamespace}, &corev1.Namespace{})
+			helper.CheckIfPresent(types.NamespacedName{Name: argoCDNamespace}, &corev1.Namespace{})
 		})
 
 		It("Argo CD instance is created", func() {
-			checkIfPresent(types.NamespacedName{Name: argoCDInstanceName, Namespace: argoCDNamespace}, argoCDInstance)
-			checkIfPresent(types.NamespacedName{Name: defaultApplicationControllerName, Namespace: argoCDNamespace}, &appsv1.StatefulSet{})
-			checkIfPresent(types.NamespacedName{Name: defaultApplicationSetControllerName, Namespace: argoCDNamespace}, &appsv1.Deployment{})
-			checkIfPresent(types.NamespacedName{Name: defaultDexInstanceName, Namespace: argoCDNamespace}, &appsv1.Deployment{})
-			checkIfPresent(types.NamespacedName{Name: defaultRedisName, Namespace: argoCDNamespace}, &appsv1.Deployment{})
-			checkIfPresent(types.NamespacedName{Name: defaultRepoServerName, Namespace: argoCDNamespace}, &appsv1.Deployment{})
-			checkIfPresent(types.NamespacedName{Name: defaultServerName, Namespace: argoCDNamespace}, &appsv1.Deployment{})
+			helper.CheckIfPresent(types.NamespacedName{Name: argoCDInstanceName, Namespace: argoCDNamespace}, argoCDInstance)
+			helper.CheckIfPresent(types.NamespacedName{Name: defaultApplicationControllerName, Namespace: argoCDNamespace}, &appsv1.StatefulSet{})
+			helper.CheckIfPresent(types.NamespacedName{Name: defaultApplicationSetControllerName, Namespace: argoCDNamespace}, &appsv1.Deployment{})
+			helper.CheckIfPresent(types.NamespacedName{Name: defaultDexInstanceName, Namespace: argoCDNamespace}, &appsv1.Deployment{})
+			helper.CheckIfPresent(types.NamespacedName{Name: defaultRedisName, Namespace: argoCDNamespace}, &appsv1.Deployment{})
+			helper.CheckIfPresent(types.NamespacedName{Name: defaultRepoServerName, Namespace: argoCDNamespace}, &appsv1.Deployment{})
+			helper.CheckIfPresent(types.NamespacedName{Name: defaultServerName, Namespace: argoCDNamespace}, &appsv1.Deployment{})
 		})
 
 		It("Manual modification of Argo CD CR is allowed", func() {
@@ -101,7 +101,7 @@ var _ = Describe("GitOpsServiceController", func() {
 
 			By("check if the modification was not overwritten")
 			argoCDInstance = &argoapp.ArgoCD{}
-			checkIfPresent(types.NamespacedName{Name: argoCDInstanceName, Namespace: argoCDNamespace}, argoCDInstance)
+			helper.CheckIfPresent(types.NamespacedName{Name: argoCDInstanceName, Namespace: argoCDNamespace}, argoCDInstance)
 			Expect(argoCDInstance.Spec.DisableAdmin).Should(BeTrue())
 		})
 	})
@@ -109,40 +109,40 @@ var _ = Describe("GitOpsServiceController", func() {
 	Context("Check if gitops backend resources are created", func() {
 		name := "cluster"
 		It("Backend deployment is created", func() {
-			checkIfPresent(types.NamespacedName{Name: name, Namespace: argoCDNamespace}, &appsv1.Deployment{})
+			helper.CheckIfPresent(types.NamespacedName{Name: name, Namespace: argoCDNamespace}, &appsv1.Deployment{})
 		})
 
 		It("Backend service is created", func() {
-			checkIfPresent(types.NamespacedName{Name: name, Namespace: argoCDNamespace}, &corev1.Service{})
+			helper.CheckIfPresent(types.NamespacedName{Name: name, Namespace: argoCDNamespace}, &corev1.Service{})
 		})
 
 		It("RBAC for backend service is created", func() {
 			prefixedName := fmt.Sprintf("%s-%s", "gitops-service", name)
-			checkIfPresent(types.NamespacedName{Name: prefixedName}, &rbacv1.ClusterRole{})
-			checkIfPresent(types.NamespacedName{Name: prefixedName}, &rbacv1.ClusterRoleBinding{})
-			checkIfPresent(types.NamespacedName{Name: prefixedName, Namespace: argoCDNamespace}, &corev1.ServiceAccount{})
+			helper.CheckIfPresent(types.NamespacedName{Name: prefixedName}, &rbacv1.ClusterRole{})
+			helper.CheckIfPresent(types.NamespacedName{Name: prefixedName}, &rbacv1.ClusterRoleBinding{})
+			helper.CheckIfPresent(types.NamespacedName{Name: prefixedName, Namespace: argoCDNamespace}, &corev1.ServiceAccount{})
 		})
 	})
 
 	Context("Check if kam resources are created", func() {
 		name := "kam"
 		It("Deployment that hosts kam is created", func() {
-			checkIfPresent(types.NamespacedName{Name: name, Namespace: argoCDNamespace}, &appsv1.Deployment{})
+			helper.CheckIfPresent(types.NamespacedName{Name: name, Namespace: argoCDNamespace}, &appsv1.Deployment{})
 		})
 
 		It("Service that serves kam is created", func() {
-			checkIfPresent(types.NamespacedName{Name: name, Namespace: argoCDNamespace}, &corev1.Service{})
+			helper.CheckIfPresent(types.NamespacedName{Name: name, Namespace: argoCDNamespace}, &corev1.Service{})
 		})
 
 		It("Console CLI download resource that adds kam route to OpenShift's CLI download page is created", func() {
 
 			By("route that serves kam is created")
 			route := &routev1.Route{}
-			checkIfPresent(types.NamespacedName{Name: name, Namespace: argoCDNamespace}, route)
+			helper.CheckIfPresent(types.NamespacedName{Name: name, Namespace: argoCDNamespace}, route)
 
 			By("CLI download link is created")
 			consoleCLIDownload := &console.ConsoleCLIDownload{}
-			checkIfPresent(types.NamespacedName{Name: name}, consoleCLIDownload)
+			helper.CheckIfPresent(types.NamespacedName{Name: name}, consoleCLIDownload)
 
 			By("CLI download link should match the kam route")
 			consoleCLILink := strings.TrimLeft(consoleCLIDownload.Spec.Links[0].Href, "https://")
@@ -187,7 +187,7 @@ var _ = Describe("GitOpsServiceController", func() {
 					Name: "cluster",
 				},
 			}
-			checkIfPresent(types.NamespacedName{Name: existingImage.Name}, existingImage)
+			helper.CheckIfPresent(types.NamespacedName{Name: existingImage.Name}, existingImage)
 		})
 	})
 
@@ -377,7 +377,7 @@ var _ = Describe("GitOpsServiceController", func() {
 			namespacedName := types.NamespacedName{Name: "policy-configmap", Namespace: "openshift-config"}
 			existingConfigMap := &corev1.ConfigMap{}
 
-			checkIfPresent(namespacedName, existingConfigMap)
+			helper.CheckIfPresent(namespacedName, existingConfigMap)
 		})
 	})
 
@@ -688,7 +688,7 @@ var _ = Describe("GitOpsServiceController", func() {
 		namespace := argoCDNamespace
 		It("Template instance is created", func() {
 			tInstance := &templatev1.TemplateInstance{}
-			checkIfPresent(types.NamespacedName{Name: defaultTemplateIdentifier, Namespace: namespace}, tInstance)
+			helper.CheckIfPresent(types.NamespacedName{Name: defaultTemplateIdentifier, Namespace: namespace}, tInstance)
 		})
 
 		It("Keycloak deployment is created", func() {
@@ -711,12 +711,12 @@ var _ = Describe("GitOpsServiceController", func() {
 
 		It("Keycloak service is created", func() {
 			svc := &corev1.Service{}
-			checkIfPresent(types.NamespacedName{Name: defaultKeycloakIdentifier, Namespace: namespace}, svc)
+			helper.CheckIfPresent(types.NamespacedName{Name: defaultKeycloakIdentifier, Namespace: namespace}, svc)
 		})
 
 		It("Keycloak service route is created", func() {
 			route := &routev1.Route{}
-			checkIfPresent(types.NamespacedName{Name: defaultKeycloakIdentifier, Namespace: namespace}, route)
+			helper.CheckIfPresent(types.NamespacedName{Name: defaultKeycloakIdentifier, Namespace: namespace}, route)
 		})
 	})
 
@@ -726,10 +726,10 @@ var _ = Describe("GitOpsServiceController", func() {
 		It("Verify RHSSO Realm creation", func() {
 			By("get keycloak URL and credentials")
 			route := &routev1.Route{}
-			checkIfPresent(types.NamespacedName{Name: defaultKeycloakIdentifier, Namespace: namespace}, route)
+			helper.CheckIfPresent(types.NamespacedName{Name: defaultKeycloakIdentifier, Namespace: namespace}, route)
 
 			secret := &corev1.Secret{}
-			checkIfPresent(types.NamespacedName{Name: rhssosecret, Namespace: namespace}, secret)
+			helper.CheckIfPresent(types.NamespacedName{Name: rhssosecret, Namespace: namespace}, secret)
 
 			userEnc := b64.URLEncoding.EncodeToString(secret.Data["SSO_USERNAME"])
 			user, _ := b64.URLEncoding.DecodeString(userEnc)
@@ -848,7 +848,7 @@ var _ = Describe("GitOpsServiceController", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			templateInstance := &templatev1.TemplateInstance{}
-			checkIfPresent(types.NamespacedName{Name: defaultTemplateIdentifier, Namespace: namespace}, templateInstance)
+			helper.CheckIfPresent(types.NamespacedName{Name: defaultTemplateIdentifier, Namespace: namespace}, templateInstance)
 		})
 	})
 

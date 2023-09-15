@@ -25,6 +25,7 @@ import (
 	monitoringv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/redhat-developer/gitops-operator/test/helper"
 	rbacv1 "k8s.io/api/rbac/v1"
 
 	"k8s.io/apimachinery/pkg/types"
@@ -45,37 +46,37 @@ var _ = Describe("Argo CD metrics controller", func() {
 
 			role := rbacv1.Role{}
 			readRoleName := fmt.Sprintf("%s-read", argoCDNamespace)
-			checkIfPresent(types.NamespacedName{Name: readRoleName, Namespace: argoCDNamespace}, &role)
+			helper.CheckIfPresent(types.NamespacedName{Name: readRoleName, Namespace: argoCDNamespace}, &role)
 		})
 
 		It("Rolebinding is created", func() {
 			roleBinding := rbacv1.RoleBinding{}
 			roleBindingName := fmt.Sprintf("%s-prometheus-k8s-read-binding", argoCDNamespace)
-			checkIfPresent(types.NamespacedName{Name: roleBindingName, Namespace: argoCDNamespace}, &roleBinding)
+			helper.CheckIfPresent(types.NamespacedName{Name: roleBindingName, Namespace: argoCDNamespace}, &roleBinding)
 		})
 
 		It("Application service monitor is created", func() {
 			serviceMonitor := monitoringv1.ServiceMonitor{}
 			serviceMonitorName := argoCDInstanceName
-			checkIfPresent(types.NamespacedName{Name: serviceMonitorName, Namespace: argoCDNamespace}, &serviceMonitor)
+			helper.CheckIfPresent(types.NamespacedName{Name: serviceMonitorName, Namespace: argoCDNamespace}, &serviceMonitor)
 		})
 
 		It("API server service monitor is created", func() {
 			serviceMonitor := monitoringv1.ServiceMonitor{}
 			serviceMonitorName := fmt.Sprintf("%s-server", argoCDInstanceName)
-			checkIfPresent(types.NamespacedName{Name: serviceMonitorName, Namespace: argoCDNamespace}, &serviceMonitor)
+			helper.CheckIfPresent(types.NamespacedName{Name: serviceMonitorName, Namespace: argoCDNamespace}, &serviceMonitor)
 		})
 
 		It("Repo server service monitor is created", func() {
 			serviceMonitor := monitoringv1.ServiceMonitor{}
 			serviceMonitorName := fmt.Sprintf("%s-repo-server", argoCDInstanceName)
-			checkIfPresent(types.NamespacedName{Name: serviceMonitorName, Namespace: argoCDNamespace}, &serviceMonitor)
+			helper.CheckIfPresent(types.NamespacedName{Name: serviceMonitorName, Namespace: argoCDNamespace}, &serviceMonitor)
 		})
 
 		It("Prometheus rule is created", func() {
 			rule := monitoringv1.PrometheusRule{}
 			ruleName := "gitops-operator-argocd-alerts"
-			checkIfPresent(types.NamespacedName{Name: ruleName, Namespace: argoCDNamespace}, &rule)
+			helper.CheckIfPresent(types.NamespacedName{Name: ruleName, Namespace: argoCDNamespace}, &rule)
 		})
 	})
 })
