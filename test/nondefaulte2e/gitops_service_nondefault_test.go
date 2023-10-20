@@ -22,7 +22,7 @@ import (
 	"time"
 
 	argoapp "github.com/argoproj-labs/argocd-operator/api/v1beta1"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	routev1 "github.com/openshift/api/route/v1"
 

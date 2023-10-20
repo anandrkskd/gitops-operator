@@ -26,7 +26,7 @@ import (
 	"time"
 
 	argoapp "github.com/argoproj-labs/argocd-operator/api/v1beta1"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	corev1 "k8s.io/api/core/v1"
 	kubeerrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -215,4 +215,42 @@ func DeleteNamespace(k8sClient client.Client, nsToDelete string) error {
 
 	return nil
 
+}
+
+// CreateNamespace deletes a namespace, and waits for deletion to complete.
+func CreateNamespace(k8sClient client.Client, nsToCreate string) error {
+	// create the standaloneArgoCDNamespace namespace and wait for it to not exist
+	nsTarget := &corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: nsToCreate,
+		},
+	}
+	err := k8sClient.Create(context.TODO(), nsTarget)
+	if err != nil {
+		if kubeerrors.IsNotFound(err) {
+			return nil
+		}
+		if kubeerrors.IsAlreadyExists(err) {
+			return fmt.Errorf("namespace already exists %v", err)
+		}
+		return fmt.Errorf("unable to create namespace %v", err)
+	}
+	return nil
+}
+
+func CheckIfNamespacePresent(k8sClient client.Client, nsToCheck string) bool {
+	nsList := &corev1.NamespaceList{}
+
+	err := k8sClient.List(context.Background(), nsList)
+	if err != nil {
+		fmt.Errorf("unable to list namespace %v", err)
+		return false
+	}
+
+	for _, ns := range nsList.Items {
+		if ns.Name == nsToCheck {
+			return true
+		}
+	}
+	return false
 }

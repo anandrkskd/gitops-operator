@@ -29,7 +29,7 @@ import (
 	argoapi "github.com/argoproj-labs/argocd-operator/api/v1beta1"
 	argocdprovisioner "github.com/argoproj-labs/argocd-operator/controllers/argocd"
 	monitoringv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	appsv1 "github.com/openshift/api/apps/v1"
 	configv1 "github.com/openshift/api/config/v1"
@@ -50,7 +50,6 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
-	"sigs.k8s.io/controller-runtime/pkg/envtest/printer"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	//+kubebuilder:scaffold:imports
@@ -91,10 +90,8 @@ const (
 
 func TestAPIs(t *testing.T) {
 	RegisterFailHandler(Fail)
-
-	RunSpecsWithDefaultAndCustomReporters(t,
-		"Controller Suite",
-		[]Reporter{printer.NewlineReporter{}})
+	RunSpecs(t,
+		"Controller Suite")
 }
 
 var _ = BeforeSuite(func() {
@@ -176,8 +173,7 @@ var _ = BeforeSuite(func() {
 		err = mgr.Start(ctrl.SetupSignalHandler())
 		Expect(err).NotTo(HaveOccurred())
 	}()
-
-}, 60)
+})
 
 var _ = AfterSuite(func() {
 	By("remove the GitOpsService Instance")
