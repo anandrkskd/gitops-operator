@@ -1,0 +1,1 @@
+orb bundle convert helm "docker://registry.redhat.io/openshift-gitops-1/gitops-operator-bundle@sha256:b89210f76c58360210437f48dbde51d298ab1eb30cd2b77fb93c0e84dc8740c1" chart-archive:~/go/scr/github.com/redhat-developer/gitops-operator/chart/openshift-gitops/gitops.tgz
