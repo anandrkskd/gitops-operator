@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "certProvider": {
+      "enum": [
+        "cert-manager",
+        "service-ca"
+      ],
+      "type": "string"
+    },
+    "deploymentConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "affinity": {
+          "type": "object"
+        },
+        "annotations": {
+          "type": "object"
+        },
+        "env": {
+          "type": "array"
+        },
+        "envFrom": {
+          "type": "array"
+        },
+        "nodeSelector": {
+          "type": "object"
+        },
+        "resources": {
+          "type": "object"
+        },
+        "tolerations": {
+          "type": "array"
+        },
+        "volumeMounts": {
+          "type": "array"
+        },
+        "volumes": {
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "watchNamespace": {
+      "const": "",
+      "type": "string"
+    }
+  },
+  "required": [
+    "certProvider"
+  ],
+  "type": "object"
+}

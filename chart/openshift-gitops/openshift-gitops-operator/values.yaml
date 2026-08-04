@@ -1,0 +1,22 @@
+# watchNamespace sets the namespace the operator watches for resources.
+# An empty string means all namespaces.
+watchNamespace: ""
+
+# certProvider specifies the certificate provider for webhook TLS.
+# Valid values: "cert-manager", "service-ca"
+certProvider: cert-manager
+
+# deploymentConfig allows customizing the operator's Deployment.
+#
+# Field behaviors:
+#   annotations   - merged; base annotations take precedence
+#   env           - merged by name; overrides take precedence, new vars appended
+#   envFrom       - appended to base list
+#   resources     - replaces base resource requirements
+#   nodeSelector  - replaces base node selector
+#   affinity      - selectively overrides by sub-field
+#                   (nodeAffinity, podAffinity, podAntiAffinity)
+#   tolerations   - appended to base list
+#   volumes       - appended to base list
+#   volumeMounts  - appended to base list
+deploymentConfig: {}
